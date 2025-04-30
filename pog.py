@@ -7,6 +7,8 @@ win_height = 500
 window = display.set_mode((win_width, win_height))
 display.set_caption('Я в эти игры уже играл!!!')
 background = transform.scale(image.load('Ani_backgr.png'), (win_width, win_height))
+speed_x = 3
+speed_y = 3
 
 #mixer.init()
 #mixer.music.load('space.ogg')
@@ -81,8 +83,8 @@ class Player(Gameprite):
 #font.init()
 #font2 = font.SysFont('Arial', 36)
 #
-img_hero = 'paketka.jpg'
-img_enemy = 'm9ch.jpg'
+img_hero = 'paketka.png'
+img_enemy = 'm9ch.png'
 #img_bullet = 'ufo.png'
 ship_1 = Player(img_hero, 5, win_height - 100, 80, 100, 10)
 ship_2 = Player(img_hero, 600, win_height - 100, 80, 100, 10)
@@ -109,20 +111,21 @@ m9ch = Gameprite(img_enemy, 200, win_height - 100, 80, 100, 10)
 #score = 0
 game = True
 finish = False
-#clock = time.Clock()
-#FPS = 140
+clock = time.Clock()
+FPS = 140
 #
 #
 #
-#font.init()
-#font1 = font.SysFont('Arial', 70)
-#win = font1.render('WOW, CONGRATE!', True, (250, 215, 0))
-#lose = font1.render('LOL YOU DIED!', True, (180, 0, 0))
+font.init()
+font1 = font.Font(None, 70)
+lose1 = font1.render('Player 1 LOSE!', True, (180, 0, 0))
+lose2 = font1.render('Player 2 LOSE!', True, (180, 0, 0))
 #
 while game:
     for e in event.get():
         if e.type == QUIT:
             game = False 
+
 #        elif e.type == KEYDOWN:
 #            if e.key == K_SPACE:
 #                if direction == 'right':
@@ -160,15 +163,19 @@ while game:
 #                    monsters.add(monster)
 
 
-    if not finish:
+    if not finish :
         window.blit(background, (0, 0))
-#        text = font2.render('Счёт: ' + str(score), 1, (255, 255, 255))
-#        window.blit(text, (10, 20))
-#        text_lose = font2.render('Пропущено: ' + str(lost), 1, (255, 255, 255))
-#        window.blit(text_lose, (10, 50))
+        if m9ch.rect.y > win_height - 80 or m9ch.rect.y < 0:
+            speed_y *= -1
+        if sprite.collide_rect(m9ch, ship_1) or sprite.collide_rect(m9ch, ship_2):
+            speed_x *= -1.1
+            speed_y *= 1.11 
+        
+
+        m9ch.rect.x += speed_x
+        m9ch.rect.y += speed_y
         ship_1.update_l()
         ship_2.update_r()
-        m9ch.update()
 #        monsters.update()
 #        bullets.update()
 #        asteroids.update()
@@ -176,6 +183,12 @@ while game:
         ship_1.reset()
         ship_2.reset()
         m9ch.reset() 
+        if m9ch.rect.x < 0:
+            window.blit(lose1, (200, 200))
+            finish = True
+        if m9ch.rect.x > 620:
+            window.blit(lose2, (200, 200))
+            finish = True
 #        monsters.draw(window)
 #        bullets.draw(window)
 #        asteroids.draw(window)
@@ -217,4 +230,4 @@ while game:
 #
         display.update()
     
-#    clock.tick(FPS)
+    clock.tick(FPS)
