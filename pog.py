@@ -83,8 +83,8 @@ class Player(Gameprite):
 #font.init()
 #font2 = font.SysFont('Arial', 36)
 #
-img_hero = 'paketka.png'
-img_enemy = 'm9ch.png'
+img_hero = 'paketka.jpg'
+img_enemy = 'm9ch.jpg'
 #img_bullet = 'ufo.png'
 ship_1 = Player(img_hero, 5, win_height - 100, 80, 100, 10)
 ship_2 = Player(img_hero, 600, win_height - 100, 80, 100, 10)
@@ -108,11 +108,11 @@ m9ch = Gameprite(img_enemy, 200, win_height - 100, 80, 100, 10)
 #goal = 30
 #lost = 0
 #life = 3
-#score = 0
+score = 0
 game = True
 finish = False
 clock = time.Clock()
-FPS = 140
+FPS = 60
 #
 #
 #
@@ -120,6 +120,7 @@ font.init()
 font1 = font.Font(None, 70)
 lose1 = font1.render('Player 1 LOSE!', True, (180, 0, 0))
 lose2 = font1.render('Player 2 LOSE!', True, (180, 0, 0))
+
 #
 while game:
     for e in event.get():
@@ -165,15 +166,24 @@ while game:
 
     if not finish :
         window.blit(background, (0, 0))
+        
+        schet = font1.render(str(score), True, (200, 200, 200))
+
+        m9ch.rect.x += speed_x
+        m9ch.rect.y += speed_y
+
         if m9ch.rect.y > win_height - 80 or m9ch.rect.y < 0:
             speed_y *= -1
         if sprite.collide_rect(m9ch, ship_1) or sprite.collide_rect(m9ch, ship_2):
             speed_x *= -1.1
             speed_y *= 1.11 
+            score = score + 1
+
+        window.blit(schet, (10, 10))
+
         
 
-        m9ch.rect.x += speed_x
-        m9ch.rect.y += speed_y
+        
         ship_1.update_l()
         ship_2.update_r()
 #        monsters.update()
@@ -201,10 +211,7 @@ while game:
 #            else:
 #                num_fire = 0
 #                rel_time = False
-#
-#        collides = sprite.groupcollide(monsters, bullets, True, True)
-#        for c in collides:
-#            score = score + 1
+# sprite
 #            monster = Enemy(img_enemy, randint(80, win_width - 80), -40, 80, 50, randint(1, 3))
 #            monsters.add(monster)
 #
